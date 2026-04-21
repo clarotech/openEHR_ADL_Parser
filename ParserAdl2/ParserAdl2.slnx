@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ParserAdl2/ParserAdl2.csproj" />
+  <Project Path="ParserAdl2.Tests/ParserAdl2.Tests.csproj" />
+</Solution>

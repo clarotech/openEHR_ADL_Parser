@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>ParserAdl2.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+    <PackageReference Include="Antlr4BuildTasks" Version="12.14.0" PrivateAssets="all" IncludeAssets="build" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Antlr4 Include="..\..\openEHR-antlr4\reader_adl14\src\main\antlr\Adl14Lexer.g4">
+      <LibPath>..\..\openEHR-antlr4\reader_common\src\main\antlr</LibPath>
+    </Antlr4>
+    <Antlr4 Include="..\..\openEHR-antlr4\reader_adl14\src\main\antlr\Adl14Parser.g4">
+      <Visitor>true</Visitor>   <!-- generates IAdlParserVisitor -->
+      <Listener>true</Listener> <!-- generates IAdlParserListener -->
+    </Antlr4>
+    <Antlr4 Include="..\..\openEHR-antlr4\reader_common\src\main\antlr\OdinLexer.g4">
+      <LibPath>..\..\openEHR-antlr4\reader_common\src\main\antlr</LibPath>
+    </Antlr4>
+    <Antlr4 Include="..\..\openEHR-antlr4\reader_common\src\main\antlr\OdinParser.g4">
+      <LibPath>..\..\openEHR-antlr4\reader_common\src\main\antlr</LibPath>
+    </Antlr4>
+    <Antlr4 Include="..\..\openEHR-antlr4\reader_adl14\src\main\antlr\Cadl14Lexer.g4">
+      <LibPath>..\..\openEHR-antlr4\reader_adl14\src\main\antlr;..\..\openEHR-antlr4\reader_common\src\main\antlr</LibPath>
+    </Antlr4>
+    <Antlr4 Include="..\..\openEHR-antlr4\reader_adl14\src\main\antlr\Cadl14Parser.g4">
+      <LibPath>..\..\openEHR-antlr4\reader_adl14\src\main\antlr;..\..\openEHR-antlr4\reader_common\src\main\antlr</LibPath>
+      <Visitor>true</Visitor>
+      <Listener>true</Listener>
+    </Antlr4>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TestAdl\*.adl" />
+  </ItemGroup>
+</Project>

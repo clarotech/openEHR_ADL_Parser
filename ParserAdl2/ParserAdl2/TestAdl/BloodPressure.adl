@@ -1,0 +1,104 @@
+archetype (adl_version=1.4; uid=1811b084-29c0-4bec-bde3-c70b7a5bc28e)
+	openEHR-EHR-OBSERVATION.blood_pressure.v2
+
+concept
+	[at0000]	-- Blood pressure
+language
+	original_language = <[ISO_639-1::en]>
+description
+	original_author = <
+		["name"] = <"Sam Heard">
+		["organisation"] = <"Ocean Informatics">
+		["email"] = <"sam.heard@oceaninformatics.com">
+		["date"] = <"2006-03-22">
+	>
+	details = <
+		["en"] = <
+			language = <[ISO_639-1::en]>
+			purpose = <"To record the systemic arterial blood pressure of an individual.">
+			use = <"Use to record all representations of systemic arterial blood pressure measurement, no matter which method or body location is used to record it.">
+			keywords = <"observations", "measurement", "bp", "vital signs", "systolic", "diastolic">
+			misuse = <"Not to be used to record the measurement of arterial blood pressure which is NOT a surrogate for arterial pressure in the systemic circulation.">
+			copyright = <"© openEHR Foundation">
+		>
+	>
+	lifecycle_state = <"published">
+
+definition
+	OBSERVATION[at0000] matches {	-- Blood pressure
+		data matches {
+			HISTORY[at0001] matches {	-- History
+				events cardinality matches {1..*; unordered} matches {
+					EVENT[at0006] occurrences matches {0..*} matches {	-- Any event
+						data matches {
+							ITEM_TREE[at0003] matches {	-- blood pressure
+								items cardinality matches {0..*; unordered} matches {
+									ELEMENT[at0004] occurrences matches {0..1} matches {	-- Systolic
+										value matches {
+											C_DV_QUANTITY <
+												property = <[openehr::125]>
+												list = <
+													["1"] = <
+														units = <"mm[Hg]">
+														magnitude = <|0.0..<1000.0|>
+														precision = <|0|>
+													>
+												>
+											>
+										}
+									}
+									ELEMENT[at0005] occurrences matches {0..1} matches {	-- Diastolic
+										value matches {
+											C_DV_QUANTITY <
+												property = <[openehr::125]>
+												list = <
+													["1"] = <
+														units = <"mm[Hg]">
+														magnitude = <|0.0..<1000.0|>
+														precision = <|0|>
+													>
+												>
+											>
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+ontology
+	terminologies_available = <"SNOMED-CT", ...>
+	term_definitions = <
+		["en"] = <
+			items = <
+				["at0000"] = <
+					text = <"Blood pressure">
+					description = <"The local measurement of arterial blood pressure which is a surrogate for arterial pressure in the systemic circulation.">
+					comment = <"Most commonly, use of the term 'blood pressure' refers to measurement of brachial artery pressure in the upper arm.">
+				>
+				["at0001"] = <
+					text = <"History">
+					description = <"History Structural node.">
+				>
+				["at0003"] = <
+					text = <"blood pressure">
+					description = <"@ internal @">
+				>
+				["at0004"] = <
+					text = <"Systolic">
+					description = <"Peak systemic arterial blood pressure  - measured in systolic or contraction phase of the heart cycle.">
+				>
+				["at0005"] = <
+					text = <"Diastolic">
+					description = <"Minimum systemic arterial blood pressure - measured in the diastolic or relaxation phase of the heart cycle.">
+				>
+				["at0006"] = <
+					text = <"Any event">
+					description = <"Default, unspecified point in time or interval event which may be explicitly defined in a template or at run-time.">
+				>
+			>
+		>
+	>

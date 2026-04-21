@@ -1,0 +1,1 @@
+When creating class models for ADL files, note that CSD descriptions of the classes are in the 'xsd_files' folder

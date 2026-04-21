@@ -1,0 +1,3 @@
+[submodule "openEHR-antlr4"]
+	path = openEHR-antlr4
+	url = https://github.com/openEHR/openEHR-antlr4.git
