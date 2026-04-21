@@ -11,6 +11,9 @@ public static class ArchetypeParser
     /// </summary>
     public static Archetype Parse(string adlText)
     {
+        // Strip UTF-8 BOM if present — ANTLR lexer does not recognise it.
+        adlText = adlText.TrimStart('\uFEFF');
+
         // ── Pass 1: ADL structural parse ────────────────────────────────────
         var adlStream = new AntlrInputStream(adlText);
         var adlLexer  = new Adl14Lexer(adlStream);
