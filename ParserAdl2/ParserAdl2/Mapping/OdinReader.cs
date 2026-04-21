@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Clarotech.openEHR.ADL2;
 
 /// <summary>
@@ -6,23 +8,41 @@ namespace Clarotech.openEHR.ADL2;
 /// </summary>
 internal static class OdinReader
 {
+    // Caches attribute-name → value-block per parse-tree node to avoid O(n)
+    // linear scans on every Attr() call. ConditionalWeakTable uses weak keys
+    // so cached entries are collected with their parse tree.
+    private static readonly ConditionalWeakTable<OdinParser.OdinObjectContext,
+        Dictionary<string, OdinParser.OdinObjectValueBlockContext>> _objectCache = new();
+
+    private static readonly ConditionalWeakTable<OdinParser.OdinObjectValueBlockContext,
+        Dictionary<string, OdinParser.OdinObjectValueBlockContext>> _blockCache = new();
+
+    private static Dictionary<string, OdinParser.OdinObjectValueBlockContext> BuildAttrDict(
+        IEnumerable<OdinParser.OdinAttrValContext> attrs) =>
+        attrs.Where(a => a.odinObjectBlock()?.odinObjectValueBlock() != null)
+             .ToDictionary(
+                 a => a.odinAttrName().GetText(),
+                 a => a.odinObjectBlock().odinObjectValueBlock());
+
     // ── attribute lookup ────────────────────────────────────────────────────
 
     /// <summary>Returns the value block for a named attribute on a top-level odinObject.</summary>
     public static OdinParser.OdinObjectValueBlockContext? Attr(
-        OdinParser.OdinObjectContext? ctx, string name) =>
-        ctx?.odinAttrVal()
-           .FirstOrDefault(a => a.odinAttrName().GetText() == name)
-           ?.odinObjectBlock()
-           ?.odinObjectValueBlock();
+        OdinParser.OdinObjectContext? ctx, string name)
+    {
+        if (ctx == null) return null;
+        var dict = _objectCache.GetValue(ctx, static c => BuildAttrDict(c.odinAttrVal()));
+        return dict.TryGetValue(name, out var val) ? val : null;
+    }
 
     /// <summary>Returns the value block for a named attribute nested inside another value block.</summary>
     public static OdinParser.OdinObjectValueBlockContext? Attr(
-        OdinParser.OdinObjectValueBlockContext? ctx, string name) =>
-        ctx?.odinAttrVal()
-           .FirstOrDefault(a => a.odinAttrName().GetText() == name)
-           ?.odinObjectBlock()
-           ?.odinObjectValueBlock();
+        OdinParser.OdinObjectValueBlockContext? ctx, string name)
+    {
+        if (ctx == null) return null;
+        var dict = _blockCache.GetValue(ctx, static c => BuildAttrDict(c.odinAttrVal()));
+        return dict.TryGetValue(name, out var val) ? val : null;
+    }
 
     // ── keyed objects (dictionary-style blocks) ─────────────────────────────
 

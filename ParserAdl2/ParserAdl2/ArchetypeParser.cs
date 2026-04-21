@@ -22,10 +22,13 @@ public static class ArchetypeParser
 
         var arch = adlParser.adlObject().authoredArchetype();
 
-        // ── Pass 2: re-parse ODIN section blobs ─────────────────────────────
-        var langOdin = ParseOdin(arch.languageSection().odinText());
-        var descOdin = ParseOdin(arch.descriptionSection().odinText());
-        var termOdin = ParseOdin(arch.terminologySection().odinText());
+        // ── Pass 2: re-parse ODIN section blobs (in parallel — each is independent) ──
+        OdinParser.OdinObjectContext langOdin = null!, descOdin = null!, termOdin = null!;
+        Parallel.Invoke(
+            () => langOdin = ParseOdin(arch.languageSection().odinText()),
+            () => descOdin = ParseOdin(arch.descriptionSection().odinText()),
+            () => termOdin = ParseOdin(arch.terminologySection().odinText())
+        );
 
         return new Archetype
         {
